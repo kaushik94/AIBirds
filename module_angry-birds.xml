@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_angry-birds" default="compile.module.angry-birds">
+  <dirname property="module.angry-birds.basedir" file="${ant.file.module_angry-birds}"/>
+  
+  <property name="module.jdk.home.angry-birds" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.angry-birds" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.angry-birds" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.angry-birds" value="${compiler.args}"/>
+  
+  <property name="angry-birds.output.dir" value="${module.angry-birds.basedir}/out/production/Angry-Birds"/>
+  <property name="angry-birds.testoutput.dir" value="${module.angry-birds.basedir}/out/test/Angry-Birds"/>
+  
+  <path id="angry-birds.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="angry-birds.module.production.classpath">
+    <path refid="library.external.classpath"/>
+  </path>
+  
+  <path id="angry-birds.runtime.production.module.classpath">
+    <pathelement location="${angry-birds.output.dir}"/>
+    <path refid="library.external.classpath"/>
+  </path>
+  
+  <path id="angry-birds.module.classpath">
+    <pathelement location="${angry-birds.output.dir}"/>
+    <path refid="library.external.classpath"/>
+  </path>
+  
+  <path id="angry-birds.runtime.module.classpath">
+    <pathelement location="${angry-birds.testoutput.dir}"/>
+    <pathelement location="${angry-birds.output.dir}"/>
+    <path refid="library.external.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.angry-birds">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.angry-birds">
+    <patternset refid="excluded.from.module.angry-birds"/>
+  </patternset>
+  
+  <path id="angry-birds.module.sourcepath">
+    <dirset dir="${module.angry-birds.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.angry-birds" depends="compile.module.angry-birds.production,compile.module.angry-birds.tests" description="Compile module Angry-Birds"/>
+  
+  <target name="compile.module.angry-birds.production" depends="register.custom.compilers" description="Compile module Angry-Birds; production classes">
+    <mkdir dir="${angry-birds.output.dir}"/>
+    <javac2 destdir="${angry-birds.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.angry-birds}/javac">
+      <compilerarg line="${compiler.args.angry-birds}"/>
+      <bootclasspath refid="angry-birds.module.bootclasspath"/>
+      <classpath refid="angry-birds.module.production.classpath"/>
+      <src refid="angry-birds.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.angry-birds"/>
+    </javac2>
+    
+    <copy todir="${angry-birds.output.dir}">
+      <fileset dir="${module.angry-birds.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.angry-birds.tests" depends="register.custom.compilers,compile.module.angry-birds.production" description="compile module Angry-Birds; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.angry-birds" description="cleanup module">
+    <delete dir="${angry-birds.output.dir}"/>
+    <delete dir="${angry-birds.testoutput.dir}"/>
+  </target>
+</project>
